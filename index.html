@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0f0f10" />
+  <title>F1 Monaco 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./base.css" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header" id="top">
+    <div class="header-inner">
+      <div class="header-brand">
+        <!-- SVG Logo -->
+        <svg class="logo-svg" aria-label="F1 Monaco 2026" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="18" stroke="var(--color-accent)" stroke-width="2"/>
+          <path d="M10 20 L20 10 L30 20 L20 30 Z" fill="var(--color-accent)" opacity="0.9"/>
+          <circle cx="20" cy="20" r="3" fill="var(--color-bg)"/>
+        </svg>
+        <div class="brand-text">
+          <span class="brand-race">Monaco GP</span>
+          <span class="brand-year">5–7 Jun 2026</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="refreshBtn" aria-label="Wetter aktualisieren" title="Wetter neu laden">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+        <button class="icon-btn" data-theme-toggle aria-label="Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Tab Nav -->
+    <nav class="tab-nav" role="tablist" aria-label="Bereiche">
+      <button class="tab-btn active" role="tab" data-tab="schedule" aria-selected="true">Zeitplan</button>
+      <button class="tab-btn" role="tab" data-tab="weather" aria-selected="false">Wetter</button>
+      <button class="tab-btn" role="tab" data-tab="tyres" aria-selected="false">Reifen</button>
+      <button class="tab-btn" role="tab" data-tab="circuit" aria-selected="false">Strecke</button>
+      <button class="tab-btn" role="tab" data-tab="docs" aria-selected="false">FIA</button>
+    </nav>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ===== TAB: SCHEDULE ===== -->
+    <section id="tab-schedule" class="tab-panel active" role="tabpanel" aria-label="Zeitplan">
+      
+      <!-- Flags / Alert Badges -->
+      <div class="alert-bar" id="alertBar">
+        <div class="alert-badge badge-street">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+          Stadtkurs
+        </div>
+        <div class="alert-badge badge-warn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+          SC-Risiko 43%
+        </div>
+        <div class="alert-badge badge-info">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          78 Runden
+        </div>
+        <div class="alert-badge badge-ok">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Kein Sprint
+        </div>
+      </div>
+
+      <!-- Countdown -->
+      <div class="countdown-card">
+        <div class="countdown-label">Rennstart</div>
+        <div class="countdown-timer" id="countdown">
+          <span class="cd-block"><span class="cd-num" id="cd-d">--</span><span class="cd-unit">T</span></span>
+          <span class="cd-sep">:</span>
+          <span class="cd-block"><span class="cd-num" id="cd-h">--</span><span class="cd-unit">Std</span></span>
+          <span class="cd-sep">:</span>
+          <span class="cd-block"><span class="cd-num" id="cd-m">--</span><span class="cd-unit">Min</span></span>
+          <span class="cd-sep">:</span>
+          <span class="cd-block"><span class="cd-num" id="cd-s">--</span><span class="cd-unit">Sek</span></span>
+        </div>
+        <div class="countdown-sub">So. 7. Juni 2026 · 15:00 CEST</div>
+      </div>
+
+      <!-- Sessions -->
+      <div class="section-title">Sessionplan (CEST)</div>
+      
+      <!-- Friday -->
+      <div class="day-group">
+        <div class="day-header">
+          <span class="day-name">Freitag</span>
+          <span class="day-date">5. Juni</span>
+        </div>
+        <div class="sessions-list">
+          <div class="session-row" data-session="fp1">
+            <div class="session-type-dot dot-practice"></div>
+            <div class="session-info">
+              <span class="session-name">Freies Training 1</span>
+              <span class="session-note">Erste Daten auf dem Strassenkurs</span>
+            </div>
+            <div class="session-time">
+              <span class="time-local">13:30</span>
+              <span class="time-end">– 14:30</span>
+            </div>
+          </div>
+          <div class="session-row" data-session="fp2">
+            <div class="session-type-dot dot-practice"></div>
+            <div class="session-info">
+              <span class="session-name">Freies Training 2</span>
+              <span class="session-note">Longrun-Simulation, Reifentest</span>
+            </div>
+            <div class="session-time">
+              <span class="time-local">17:00</span>
+              <span class="time-end">– 18:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saturday -->
+      <div class="day-group">
+        <div class="day-header">
+          <span class="day-name">Samstag</span>
+          <span class="day-date">6. Juni</span>
+        </div>
+        <div class="sessions-list">
+          <div class="session-row" data-session="fp3">
+            <div class="session-type-dot dot-practice"></div>
+            <div class="session-info">
+              <span class="session-name">Freies Training 3</span>
+              <span class="session-note">Qualifying-Simulation</span>
+            </div>
+            <div class="session-time">
+              <span class="time-local">12:30</span>
+              <span class="time-end">– 13:30</span>
+            </div>
+          </div>
+          <div class="session-row session-highlight" data-session="quali">
+            <div class="session-type-dot dot-quali"></div>
+            <div class="session-info">
+              <span class="session-name">Qualifying</span>
+              <span class="session-note">Q1 / Q2 / Q3 · Grid entscheidend!</span>
+            </div>
+            <div class="session-time">
+              <span class="time-local">16:00</span>
+              <span class="time-end">– 17:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sunday -->
+      <div class="day-group">
+        <div class="day-header">
+          <span class="day-name">Sonntag</span>
+          <span class="day-date">7. Juni</span>
+        </div>
+        <div class="sessions-list">
+          <div class="session-row" data-session="parade">
+            <div class="session-type-dot dot-support"></div>
+            <div class="session-info">
+              <span class="session-name">Fahrerparade</span>
+              <span class="session-note">Traditionelle Parade durch Monaco</span>
+            </div>
+            <div class="session-time">
+              <span class="time-local">13:00</span>
+              <span class="time-end"></span>
+            </div>
+          </div>
+          <div class="session-row session-highlight session-race" data-session="race">
+            <div class="session-type-dot dot-race"></div>
+            <div class="session-info">
+              <span class="session-name">RENNEN</span>
+              <span class="session-note">78 Runden · 260,52 km · Formation 14:55</span>
+            </div>
+            <div class="session-time">
+              <span class="time-local">15:00</span>
+              <span class="time-end">CEST</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Support Series -->
+      <div class="section-title" style="margin-top: var(--space-6);">Support-Serien</div>
+      <div class="support-table">
+        <div class="support-row">
+          <span class="support-series">Formel 2</span>
+          <span class="support-event">Feature Race</span>
+          <span class="support-time">So. 08:15</span>
+        </div>
+        <div class="support-row">
+          <span class="support-series">Formel 3</span>
+          <span class="support-event">Feature Race</span>
+          <span class="support-time">So. 07:55</span>
+        </div>
+        <div class="support-row">
+          <span class="support-series">Porsche Supercup</span>
+          <span class="support-event">Rennen</span>
+          <span class="support-time">So. 10:00</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===== TAB: WEATHER ===== -->
+    <section id="tab-weather" class="tab-panel" role="tabpanel" aria-label="Wetter">
+      
+      <div class="weather-location">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+        Monte Carlo, Monaco
+        <span class="weather-update" id="weatherUpdate">Laden…</span>
+      </div>
+
+      <!-- Loading state -->
+      <div id="weatherLoading" class="weather-loading">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card" style="height:80px"></div>
+        <div class="skeleton-card" style="height:80px"></div>
+      </div>
+
+      <!-- Weather content -->
+      <div id="weatherContent" style="display:none">
+        <!-- Day cards -->
+        <div class="weather-days" id="weatherDays"></div>
+
+        <!-- Hourly chart for race day -->
+        <div class="section-title" style="margin-top:var(--space-6)">Rennsonntag – Stündlich</div>
+        <div class="hourly-container" id="hourlyContainer"></div>
+
+        <!-- Climate Baseline -->
+        <div class="climate-card">
+          <div class="climate-title">Klimatischer Schnitt (Anfang Juni)</div>
+          <div class="climate-grid">
+            <div class="climate-item">
+              <span class="climate-label">Ø Tageshoch</span>
+              <span class="climate-val">22°C</span>
+            </div>
+            <div class="climate-item">
+              <span class="climate-label">Ø Tief</span>
+              <span class="climate-val">17°C</span>
+            </div>
+            <div class="climate-item">
+              <span class="climate-label">Regenwahrscheinlichkeit</span>
+              <span class="climate-val">15%</span>
+            </div>
+            <div class="climate-item">
+              <span class="climate-label">Sonnenstunden/Tag</span>
+              <span class="climate-val">12 h</span>
+            </div>
+          </div>
+          <div class="climate-note">Quelle: MeteoMotorsport / Klimanorm</div>
+        </div>
+
+        <!-- SC Weather Risk -->
+        <div class="risk-card" id="rainRiskCard">
+          <div class="risk-icon">🌧️</div>
+          <div class="risk-content">
+            <div class="risk-title">Regen-Risiko-Analyse</div>
+            <div class="risk-body" id="rainRiskText">Wird geladen…</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="weatherError" class="error-state" style="display:none">
+        <div class="error-icon">⚡</div>
+        <div class="error-text">Wetterdaten konnten nicht geladen werden.<br>Bitte Verbindung prüfen.</div>
+        <button class="retry-btn" onclick="loadWeather()">Erneut versuchen</button>
+      </div>
+
+    </section>
+
+    <!-- ===== TAB: TYRES ===== -->
+    <section id="tab-tyres" class="tab-panel" role="tabpanel" aria-label="Reifen">
+      
+      <div class="section-title">Pirelli Reifenauswahl 2026</div>
+      
+      <div class="tyre-alert">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+        2026: C6 entfernt. Pirelli bestätigt 5-Compound-Range (C1–C5). Monaco fährt erwartungsgemäß die drei weichsten Mischungen.
+      </div>
+
+      <!-- Compound Cards -->
+      <div class="tyre-compounds">
+        <div class="compound-card compound-hard">
+          <div class="compound-header">
+            <div class="compound-circle c-hard">C3</div>
+            <div class="compound-info">
+              <span class="compound-label">HARD</span>
+              <span class="compound-color-name">Weiss</span>
+            </div>
+          </div>
+          <div class="compound-stats">
+            <div class="stat-row">
+              <span class="stat-label">Stint-Länge</span>
+              <div class="stat-bar-wrap">
+                <div class="stat-bar" style="width:85%"></div>
+              </div>
+              <span class="stat-val">Lang</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Grip-Level</span>
+              <div class="stat-bar-wrap">
+                <div class="stat-bar" style="width:60%"></div>
+              </div>
+              <span class="stat-val">Mittel</span>
+            </div>
+          </div>
+          <p class="compound-desc">Vielseitig. Gute Balance aus Grip und Haltbarkeit. Ideal für Undercut-Strategie oder langes Schlussstint.</p>
+          <div class="compound-usage">
+            <span class="usage-tag">Schlussstint</span>
+            <span class="usage-tag">Overcut</span>
+          </div>
+        </div>
+
+        <div class="compound-card compound-medium">
+          <div class="compound-header">
+            <div class="compound-circle c-medium">C4</div>
+            <div class="compound-info">
+              <span class="compound-label">MEDIUM</span>
+              <span class="compound-color-name">Gelb</span>
+            </div>
+          </div>
+          <div class="compound-stats">
+            <div class="stat-row">
+              <span class="stat-label">Stint-Länge</span>
+              <div class="stat-bar-wrap">
+                <div class="stat-bar" style="width:65%"></div>
+              </div>
+              <span class="stat-val">Mittel</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Grip-Level</span>
+              <div class="stat-bar-wrap">
+                <div class="stat-bar" style="width:78%"></div>
+              </div>
+              <span class="stat-val">Hoch</span>
+            </div>
+          </div>
+          <p class="compound-desc">Schnelles Aufwärmen bei niedrigem Reifenverschleiss. Typische Brücken-Mischung zwischen den Stints.</p>
+          <div class="compound-usage">
+            <span class="usage-tag">Mittlerer Stint</span>
+            <span class="usage-tag">Bridger</span>
+          </div>
+        </div>
+
+        <div class="compound-card compound-soft">
+          <div class="compound-header">
+            <div class="compound-circle c-soft">C5</div>
+            <div class="compound-info">
+              <span class="compound-label">SOFT</span>
+              <span class="compound-color-name">Rot</span>
+            </div>
+          </div>
+          <div class="compound-stats">
+            <div class="stat-row">
+              <span class="stat-label">Stint-Länge</span>
+              <div class="stat-bar-wrap">
+                <div class="stat-bar" style="width:35%"></div>
+              </div>
+              <span class="stat-val">Kurz</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Grip-Level</span>
+              <div class="stat-bar-wrap">
+                <div class="stat-bar" style="width:95%"></div>
+              </div>
+              <span class="stat-val">Max</span>
+            </div>
+          </div>
+          <p class="compound-desc">Maximaler Grip auf dem glatten Asphalt Monacos. Schnellstes Aufwärmen – Pflicht in Q3. Kurze Haltbarkeit.</p>
+          <div class="compound-usage">
+            <span class="usage-tag">Qualifying</span>
+            <span class="usage-tag">Kurzstint</span>
+            <span class="usage-tag">Start</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Allocation -->
+      <div class="section-title" style="margin-top:var(--space-6)">Reifenzuteilung pro Fahrer</div>
+      <div class="allocation-table">
+        <div class="alloc-header">
+          <span>Compound</span>
+          <span>Sets</span>
+          <span>Hinweis</span>
+        </div>
+        <div class="alloc-row">
+          <span class="alloc-compound"><span class="dot-h"></span>C3 Hard</span>
+          <span class="alloc-num">2</span>
+          <span class="alloc-note">Für Rennen reserviert</span>
+        </div>
+        <div class="alloc-row">
+          <span class="alloc-compound"><span class="dot-m"></span>C4 Medium</span>
+          <span class="alloc-num">3</span>
+          <span class="alloc-note">FT + Rennen</span>
+        </div>
+        <div class="alloc-row">
+          <span class="alloc-compound"><span class="dot-s"></span>C5 Soft</span>
+          <span class="alloc-num">8</span>
+          <span class="alloc-note">Qualifying-Fokus, Q3-Satz Pflicht</span>
+        </div>
+      </div>
+
+      <!-- Strategy Scenarios -->
+      <div class="section-title" style="margin-top:var(--space-6)">Strategieszenarien</div>
+      <div class="strategy-cards">
+        <div class="strategy-card strat-primary">
+          <div class="strat-header">
+            <span class="strat-label">Primär (trocken)</span>
+            <span class="strat-stops">1 Stop</span>
+          </div>
+          <div class="strat-stints">
+            <span class="stint soft-tag">S (start)</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <span class="stint hard-tag">H (finish)</span>
+          </div>
+          <p class="strat-note">Klassischer 1-Stop. Soft auf Pole zum Undercut, Hard für langen Schlussstint. Boxenstopp ca. Runde 25–35.</p>
+        </div>
+        <div class="strategy-card strat-secondary">
+          <div class="strat-header">
+            <span class="strat-label">Alternativ</span>
+            <span class="strat-stops">2 Stops</span>
+          </div>
+          <div class="strat-stints">
+            <span class="stint soft-tag">S</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <span class="stint medium-tag">M</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <span class="stint hard-tag">H</span>
+          </div>
+          <p class="strat-note">Bei Safety Car oder aggressivem Untercut. Risikoreicher, aber nach SC Pflicht wenn alle gleichzeitig stoppen.</p>
+        </div>
+        <div class="strategy-card strat-sc">
+          <div class="strat-header">
+            <span class="strat-label">Safety Car Szenario</span>
+            <span class="strat-stops badge-warn-sm">SC 43%</span>
+          </div>
+          <div class="strat-stints">
+            <span class="stint soft-tag">S</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <span class="stint medium-tag">M/H</span>
+          </div>
+          <p class="strat-note">SC in den ersten 20 Runden = Stopp unter SC günstiger. Teams mit Soft am Start profitieren massiv.</p>
+        </div>
+      </div>
+
+      <!-- Reg Note -->
+      <div class="reg-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path fill="none" stroke="white" stroke-width="2" stroke-linecap="round" d="M12 16v-4M12 8h.01"/></svg>
+        2026: Pflicht-2-Stopp-Regel abgeschafft. Standard-Pflichtreifenwechsel (mind. 2 Compounds) gilt wieder.
+      </div>
+    </section>
+
+    <!-- ===== TAB: CIRCUIT ===== -->
+    <section id="tab-circuit" class="tab-panel" role="tabpanel" aria-label="Strecke">
+      
+      <div class="section-title">Circuit de Monaco</div>
+
+      <!-- Track SVG Map -->
+      <div class="track-container">
+        <svg class="track-map" viewBox="114 61 1339 956" xmlns="http://www.w3.org/2000/svg" aria-label="Streckenkarte Circuit de Monaco" role="img">
+  <defs>
+    <filter id="glow-real" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-drs" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- MAIN TRACK (real Wikipedia path, doc space) -->
+  <path
+    d="m 207.65129,536.68637 c 8.87045,-24.50098 26.39974,-70.18108 36.17152,-89.75895 9.77178,-19.57788 6.98479,-15.77432 16.96935,-29.91965 9.98456,-14.14533 30.28218,-37.23551 39.74401,-49.1218 9.46184,-11.8863 11.74077,-14.36188 15.18311,-20.09529 3.44234,-5.73341 7.77799,-17.20603 11.16404,-21.88154 3.38605,-4.67551 6.01249,-7.00118 9.3778,-8.48468 3.36531,-1.4835 5.14045,-1.28812 8.48468,-0.44656 3.34423,0.84156 6.89747,4.23124 13.39686,7.145 6.4994,2.91375 8.09762,3.74402 16.07623,6.25186 7.97861,2.50784 82.29308,18.3393 110.74735,23.66778 28.45427,5.32848 37.36257,5.13382 59.8393,8.93124 22.47673,3.79742 44.58585,5.15957 69.66366,11.61061 25.07781,6.45104 59.82154,22.58817 80.38114,26.79371 20.5596,4.20554 21.35623,3.391 40.63714,4.01906 19.28091,0.62806 55.46159,-1.12252 76.36209,0.89312 20.9005,2.01564 32.02584,6.00066 51.35462,10.71749 19.32878,4.71683 43.24929,14.76317 63.41179,17.41592 20.1625,2.65275 38.75264,0.74654 54.48056,-1.78625 15.72792,-2.53279 27.58246,-6.12675 38.40436,-11.61061 10.8219,-5.48386 17.4432,-12.25774 23.6677,-20.09529 6.2245,-7.83755 9.961,-18.4396 12.0572,-27.24028 2.0962,-8.80068 2.5469,-17.31428 1.7862,-28.13339 -0.7607,-10.81911 -3.9372,-21.19409 -7.1449,-33.93871 -3.2077,-12.74462 -10.297,-24.754 -11.6106,-37.5112 -1.3136,-12.7572 0.4288,-27.44542 3.5725,-37.5112 3.1437,-10.06578 9.9071,-18.59624 14.2899,-23.66779 4.3828,-5.07155 6.0968,-8.95765 56.2668,-37.95776 50.1701,-29.00011 137.5767,-73.8709 151.3845,-79.041457 13.8078,-5.170556 14.5875,-5.886907 19.6488,-4.912182 5.0613,0.974725 9.1282,4.125402 12.5037,7.591553 3.3755,3.466146 5.3901,7.162526 7.145,12.503736 1.7549,5.34121 3.1869,12.64841 2.2328,19.20216 -0.9541,6.55375 -6.0311,12.39407 -8.0381,18.7556 -2.007,6.36153 -3.3788,11.18943 -4.0191,19.20216 -0.6403,8.01273 0.6021,18.82551 1.3397,28.57997 0.7376,9.75446 2.7528,22.75722 3.1259,29.91964 0.3731,7.16242 -1.0562,10.53324 -0.4466,14.28999 0.6096,3.75675 1.3095,5.74104 3.5726,8.03811 2.2631,2.29707 6.0124,3.12975 8.9312,3.12593 2.9188,-0.004 5.1263,-0.90246 7.5916,-2.67937 2.4653,-1.77691 3.8567,-5.16794 4.9121,-9.3778 1.0554,-4.20986 -0.5133,-8.17422 -2.6793,-15.62967 -2.166,-7.45545 -9.4583,-42.42393 -9.3778,-54.48055 0.081,-12.05662 1.1085,-10.62967 3.1259,-15.1831 2.0174,-4.55343 4.2425,-9.05118 8.4847,-11.61061 4.2422,-2.55943 8.7303,-2.13235 15.1831,-2.23281 6.4528,-0.10046 23.2212,2.67937 23.2212,2.67937 0,0 40.3846,10.41025 50.0149,15.62966 9.6303,5.21941 8.1814,5.02126 10.271,8.48468 2.0896,3.46342 2.2819,6.60039 2.2328,10.71749 -0.049,4.1171 -0.2598,6.00916 -3.126,13.39685 -2.8662,7.38769 -16.5228,29.47309 -16.5228,29.47309 l -100.9229,139.32732 c 0,0 -19.2171,27.78572 -29.4731,38.85089 -10.256,11.06517 -18.0852,18.08314 -31.2594,27.68684 -13.1742,9.6037 -31.5888,20.2281 -48.2287,28.57996 -16.6399,8.35186 -33.8873,15.62357 -51.3546,21.43497 -17.4673,5.8114 -29.0352,9.26674 -53.1408,13.39686 -24.1056,4.13012 -62.7853,7.07512 -91.54524,8.48467 -28.7599,1.40955 -55.90539,2.24013 -80.8277,0.44657 -24.92231,-1.79356 -38.67496,-4.35042 -68.32398,-10.27093 -29.64902,-5.92051 -105.96308,-28.62697 -108.9611,-27.24027 -2.99802,1.3867 -3.70106,1.63243 -5.80531,4.46561 -2.10425,2.83318 -2.9365,10.41153 -4.91218,12.9503 -1.97568,2.53877 -1.59351,1.97352 -4.46562,3.12593 -2.87211,1.15241 -23.98469,-3.80685 -30.36621,-7.14499 -6.38152,-3.33814 -6.32936,-5.26268 -8.93124,-8.03811 -2.60188,-2.77543 -3.74514,-6.24454 -6.69843,-8.48468 -2.95329,-2.24014 -78.5949,-25.90059 -78.5949,-25.90059 L 415.30258,378.60345 c 0,0 -15.84343,-3.35528 -21.43497,-3.12594 -5.59154,0.22934 -6.81206,0.55433 -11.61061,2.67937 -4.79855,2.12504 -16.07623,11.16405 -16.07623,11.16405 0,0 -18.14324,17.21745 -27.24027,28.1334 -9.09703,10.91595 -18.85403,25.50133 -26.79372,37.5112 -7.93969,12.00987 -13.92598,20.01152 -17.83074,28.06993 -3.90476,8.05841 -6.64184,20.26456 -7.36169,23.68638 -0.71985,3.42182 -2.49206,7.88355 -1.89461,19.38713 0.59745,11.50358 6.3165,18.22732 8.85462,24.25443 9.3145,18.79513 9.47407,24.02412 5.14204,42.81192 -1.5481,6.89363 -1.21146,7.50422 -4.72722,18.81363 -3.51575,11.30942 -33.98358,115.37935 -33.98358,115.37935 0,0 -2.16026,10.73875 -4.46562,13.39686 -2.30536,2.65811 -2.73959,2.24043 -6.25187,3.12594 -3.51228,0.88551 -10.47875,-0.14319 -14.73654,0.44656 -4.25779,0.58975 -7.48567,0.4494 -10.71749,2.67937 -3.23182,2.22997 -4.46656,4.53741 -7.14499,10.27092 -2.67843,5.73351 -5.17699,13.19992 -6.69843,24.56091 -1.52144,11.36099 -0.54716,29.53768 0,43.3165 0.54716,13.77882 0.55078,25.21129 3.12594,39.29745 2.57516,14.08616 8.14757,33.10131 12.95029,44.6562 4.80272,11.55489 8.94892,18.84082 13.84342,25.00746 4.8945,6.16664 10.79921,9.35946 13.84342,12.50374 3.04421,3.14428 3.47223,2.74254 4.91218,5.8053 1.43995,3.06276 2.10408,7.91456 2.23281,12.50374 0.12873,4.58918 -0.1506,11.37636 -1.78625,14.73654 -1.63565,3.36018 -1.94484,3.643 -5.35874,5.35874 -3.4139,1.71574 -4.83176,2.42124 -15.1831,2.23281 -10.35134,-0.18843 -33.33368,-6.3725 -45.99588,-8.48468 -12.6622,-2.11218 -23.28076,-1.40518 -29.91965,-4.46561 -6.63889,-3.06043 -7.9139,-4.79019 -10.27092,-8.93124 -2.35702,-4.14105 -2.86561,-9.55385 -2.67938,-14.73655 0.18623,-5.1827 2.91067,-10.63839 4.01906,-15.62966 1.10839,-4.99127 2.77965,-9.19567 2.67937,-14.28998 -0.10028,-5.09431 -1.30836,-6.16661 -3.57249,-15.62967 -2.26413,-9.46306 -7.03025,-23.68577 -8.37633,-36.66296 -1.34608,-12.9772 -2.14299,-15.26539 -1.00147,-36.5732 1.14152,-21.30781 4.56907,-71.39339 7.59155,-95.56425 3.02248,-24.17086 4.81691,-31.72144 7.14499,-43.76307 2.32808,-12.04163 2.5989,-12.70168 6.25187,-28.57996 3.65297,-15.87828 15.8843,-46.66998 25.45403,-74.12928 9.56973,-27.4593 8.54546,-28.63988 17.41591,-53.14086 z"
+    fill="none"
+    stroke="var(--track-color)"
+    stroke-width="28"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Track highlight (inner glow) -->
+  <path
+    d="m 207.65129,536.68637 c 8.87045,-24.50098 26.39974,-70.18108 36.17152,-89.75895 9.77178,-19.57788 6.98479,-15.77432 16.96935,-29.91965 9.98456,-14.14533 30.28218,-37.23551 39.74401,-49.1218 9.46184,-11.8863 11.74077,-14.36188 15.18311,-20.09529 3.44234,-5.73341 7.77799,-17.20603 11.16404,-21.88154 3.38605,-4.67551 6.01249,-7.00118 9.3778,-8.48468 3.36531,-1.4835 5.14045,-1.28812 8.48468,-0.44656 3.34423,0.84156 6.89747,4.23124 13.39686,7.145 6.4994,2.91375 8.09762,3.74402 16.07623,6.25186 7.97861,2.50784 82.29308,18.3393 110.74735,23.66778 28.45427,5.32848 37.36257,5.13382 59.8393,8.93124 22.47673,3.79742 44.58585,5.15957 69.66366,11.61061 25.07781,6.45104 59.82154,22.58817 80.38114,26.79371 20.5596,4.20554 21.35623,3.391 40.63714,4.01906 19.28091,0.62806 55.46159,-1.12252 76.36209,0.89312 20.9005,2.01564 32.02584,6.00066 51.35462,10.71749 19.32878,4.71683 43.24929,14.76317 63.41179,17.41592 20.1625,2.65275 38.75264,0.74654 54.48056,-1.78625 15.72792,-2.53279 27.58246,-6.12675 38.40436,-11.61061 10.8219,-5.48386 17.4432,-12.25774 23.6677,-20.09529 6.2245,-7.83755 9.961,-18.4396 12.0572,-27.24028 2.0962,-8.80068 2.5469,-17.31428 1.7862,-28.13339 -0.7607,-10.81911 -3.9372,-21.19409 -7.1449,-33.93871 -3.2077,-12.74462 -10.297,-24.754 -11.6106,-37.5112 -1.3136,-12.7572 0.4288,-27.44542 3.5725,-37.5112 3.1437,-10.06578 9.9071,-18.59624 14.2899,-23.66779 4.3828,-5.07155 6.0968,-8.95765 56.2668,-37.95776 50.1701,-29.00011 137.5767,-73.8709 151.3845,-79.041457 13.8078,-5.170556 14.5875,-5.886907 19.6488,-4.912182 5.0613,0.974725 9.1282,4.125402 12.5037,7.591553 3.3755,3.466146 5.3901,7.162526 7.145,12.503736 1.7549,5.34121 3.1869,12.64841 2.2328,19.20216 -0.9541,6.55375 -6.0311,12.39407 -8.0381,18.7556 -2.007,6.36153 -3.3788,11.18943 -4.0191,19.20216 -0.6403,8.01273 0.6021,18.82551 1.3397,28.57997 0.7376,9.75446 2.7528,22.75722 3.1259,29.91964 0.3731,7.16242 -1.0562,10.53324 -0.4466,14.28999 0.6096,3.75675 1.3095,5.74104 3.5726,8.03811 2.2631,2.29707 6.0124,3.12975 8.9312,3.12593 2.9188,-0.004 5.1263,-0.90246 7.5916,-2.67937 2.4653,-1.77691 3.8567,-5.16794 4.9121,-9.3778 1.0554,-4.20986 -0.5133,-8.17422 -2.6793,-15.62967 -2.166,-7.45545 -9.4583,-42.42393 -9.3778,-54.48055 0.081,-12.05662 1.1085,-10.62967 3.1259,-15.1831 2.0174,-4.55343 4.2425,-9.05118 8.4847,-11.61061 4.2422,-2.55943 8.7303,-2.13235 15.1831,-2.23281 6.4528,-0.10046 23.2212,2.67937 23.2212,2.67937 0,0 40.3846,10.41025 50.0149,15.62966 9.6303,5.21941 8.1814,5.02126 10.271,8.48468 2.0896,3.46342 2.2819,6.60039 2.2328,10.71749 -0.049,4.1171 -0.2598,6.00916 -3.126,13.39685 -2.8662,7.38769 -16.5228,29.47309 -16.5228,29.47309 l -100.9229,139.32732 c 0,0 -19.2171,27.78572 -29.4731,38.85089 -10.256,11.06517 -18.0852,18.08314 -31.2594,27.68684 -13.1742,9.6037 -31.5888,20.2281 -48.2287,28.57996 -16.6399,8.35186 -33.8873,15.62357 -51.3546,21.43497 -17.4673,5.8114 -29.0352,9.26674 -53.1408,13.39686 -24.1056,4.13012 -62.7853,7.07512 -91.54524,8.48467 -28.7599,1.40955 -55.90539,2.24013 -80.8277,0.44657 -24.92231,-1.79356 -38.67496,-4.35042 -68.32398,-10.27093 -29.64902,-5.92051 -105.96308,-28.62697 -108.9611,-27.24027 -2.99802,1.3867 -3.70106,1.63243 -5.80531,4.46561 -2.10425,2.83318 -2.9365,10.41153 -4.91218,12.9503 -1.97568,2.53877 -1.59351,1.97352 -4.46562,3.12593 -2.87211,1.15241 -23.98469,-3.80685 -30.36621,-7.14499 -6.38152,-3.33814 -6.32936,-5.26268 -8.93124,-8.03811 -2.60188,-2.77543 -3.74514,-6.24454 -6.69843,-8.48468 -2.95329,-2.24014 -78.5949,-25.90059 -78.5949,-25.90059 L 415.30258,378.60345 c 0,0 -15.84343,-3.35528 -21.43497,-3.12594 -5.59154,0.22934 -6.81206,0.55433 -11.61061,2.67937 -4.79855,2.12504 -16.07623,11.16405 -16.07623,11.16405 0,0 -18.14324,17.21745 -27.24027,28.1334 -9.09703,10.91595 -18.85403,25.50133 -26.79372,37.5112 -7.93969,12.00987 -13.92598,20.01152 -17.83074,28.06993 -3.90476,8.05841 -6.64184,20.26456 -7.36169,23.68638 -0.71985,3.42182 -2.49206,7.88355 -1.89461,19.38713 0.59745,11.50358 6.3165,18.22732 8.85462,24.25443 9.3145,18.79513 9.47407,24.02412 5.14204,42.81192 -1.5481,6.89363 -1.21146,7.50422 -4.72722,18.81363 -3.51575,11.30942 -33.98358,115.37935 -33.98358,115.37935 0,0 -2.16026,10.73875 -4.46562,13.39686 -2.30536,2.65811 -2.73959,2.24043 -6.25187,3.12594 -3.51228,0.88551 -10.47875,-0.14319 -14.73654,0.44656 -4.25779,0.58975 -7.48567,0.4494 -10.71749,2.67937 -3.23182,2.22997 -4.46656,4.53741 -7.14499,10.27092 -2.67843,5.73351 -5.17699,13.19992 -6.69843,24.56091 -1.52144,11.36099 -0.54716,29.53768 0,43.3165 0.54716,13.77882 0.55078,25.21129 3.12594,39.29745 2.57516,14.08616 8.14757,33.10131 12.95029,44.6562 4.80272,11.55489 8.94892,18.84082 13.84342,25.00746 4.8945,6.16664 10.79921,9.35946 13.84342,12.50374 3.04421,3.14428 3.47223,2.74254 4.91218,5.8053 1.43995,3.06276 2.10408,7.91456 2.23281,12.50374 0.12873,4.58918 -0.1506,11.37636 -1.78625,14.73654 -1.63565,3.36018 -1.94484,3.643 -5.35874,5.35874 -3.4139,1.71574 -4.83176,2.42124 -15.1831,2.23281 -10.35134,-0.18843 -33.33368,-6.3725 -45.99588,-8.48468 -12.6622,-2.11218 -23.28076,-1.40518 -29.91965,-4.46561 -6.63889,-3.06043 -7.9139,-4.79019 -10.27092,-8.93124 -2.35702,-4.14105 -2.86561,-9.55385 -2.67938,-14.73655 0.18623,-5.1827 2.91067,-10.63839 4.01906,-15.62966 1.10839,-4.99127 2.77965,-9.19567 2.67937,-14.28998 -0.10028,-5.09431 -1.30836,-6.16661 -3.57249,-15.62967 -2.26413,-9.46306 -7.03025,-23.68577 -8.37633,-36.66296 -1.34608,-12.9772 -2.14299,-15.26539 -1.00147,-36.5732 1.14152,-21.30781 4.56907,-71.39339 7.59155,-95.56425 3.02248,-24.17086 4.81691,-31.72144 7.14499,-43.76307 2.32808,-12.04163 2.5989,-12.70168 6.25187,-28.57996 3.65297,-15.87828 15.8843,-46.66998 25.45403,-74.12928 9.56973,-27.4593 8.54546,-28.63988 17.41591,-53.14086 z"
+    fill="none"
+    stroke="var(--track-highlight)"
+    stroke-width="18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.5"
+  />
+
+  <!-- PIT LANE (real path, doc space) -->
+  <path
+    d="m 203.98546,977.69913 c 0,0 -17.621,-13.04869 -21.47216,-22.73523 -2.25543,-5.67291 -1.4026,-12.37296 1e-5,-18.31448 0.97333,-4.12313 3.40641,-6.08259 5.6838,-11.36761 2.27739,-5.28502 8.59547,-10.21969 10.73607,-19.57756 2.1406,-9.35787 2.218,-11.25764 -1.8946,-35.99743 -4.1126,-24.73979 -3.40908,-49.4164 -2.52613,-69.46873 0.88295,-20.05233 2.29888,-26.7669 6.31534,-50.52271 4.01646,-23.75581 13.83092,-66.21804 19.57755,-91.57242 5.74663,-25.35438 12.52418,-41.70877 14.52528,-60.62726 2.0011,-18.91849 -0.82799,-37.15545 -1.26307,-51.78578 -0.43508,-14.63033 -2.30115,-26.14287 -1.26307,-35.99743 1.03808,-9.85456 -0.2191,-14.49364 4.42074,-27.78749 4.63985,-13.29385 15.54608,-38.4504 26.52443,-56.20653 10.97835,-17.75612 28.54808,-36.60943 39.1551,-49.89118 10.60702,-13.28174 16.95049,-17.26503 24.62982,-23.99828 7.67933,-6.73325 13.06169,-9.69459 20.20909,-11.99915 7.1474,-2.30456 9.66944,-2.36251 21.47215,-1.8946 11.80271,0.46791 62.52186,8.20994 62.52186,8.20994"
+    fill="none"
+    stroke="var(--color-accent)"
+    stroke-width="10"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-dasharray="20,15"
+    opacity="0.75"
+  />
+
+  <!-- ═══════════════════════════════════════════
+       CORNER ANNOTATIONS — coords in doc space (viewBox 114 61 1339 956)
+       All positions verified against Wikimedia reference image CC BY-SA 3.0
+       ═══════════════════════════════════════════ -->
+  <style>
+    .cl {
+      font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      paint-order: stroke fill;
+      stroke: var(--map-text-stroke, #0f0f10);
+      stroke-width: 5px;
+      stroke-linejoin: round;
+    }
+  </style>
+
+  <!-- S/F Line (perpendicular to track heading ~NE at that point) -->
+  <line x1="188" y1="549" x2="228" y2="524" stroke="white" stroke-width="12" opacity="0.95" stroke-linecap="round"/>
+  <circle cx="207" cy="536" r="5" fill="white" opacity="0.95"/>
+  <text x="174" y="510" class="cl" text-anchor="end" fill="white">S/F</text>
+
+  <!-- T1 Sainte Dévote -->
+  <circle cx="243" cy="447" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="258" y="435" class="cl" text-anchor="start" fill="#e10600">T1 Sainte Dévote</text>
+
+  <!-- T3 Massenet -->
+  <circle cx="344" cy="317" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="359" y="305" class="cl" text-anchor="start" fill="#e10600">T3 Massenet</text>
+
+  <!-- T4 Casino -->
+  <circle cx="485" cy="354" r="10" fill="#f59e0b" opacity="0.92"/>
+  <text x="500" y="342" class="cl" text-anchor="start" fill="#f59e0b">T4 Casino</text>
+
+  <!-- T5 Mirabeau Haute -->
+  <circle cx="1043" cy="401" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="1028" y="389" class="cl" text-anchor="end" fill="#e10600">T5 Mirabeau Haute</text>
+
+  <!-- T6 Grand Hôtel Hairpin (the apex of the hairpin U-turn) -->
+  <circle cx="1057" cy="346" r="14" fill="#ef4444" opacity="0.95"/>
+  <text x="1042" y="330" class="cl" text-anchor="end" fill="#ef4444">T6 Grand Hôtel Hairpin</text>
+
+  <!-- T7 Mirabeau Bas -->
+  <circle cx="1056" cy="213" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="1041" y="200" class="cl" text-anchor="end" fill="#e10600">T7 Mirabeau Bas</text>
+
+  <!-- T8 Portier -->
+  <circle cx="1263" cy="96" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="1248" y="82" class="cl" text-anchor="end" fill="#e10600">T8 Portier</text>
+
+  <!-- T9 Tunnel (rightmost point = deepest in tunnel) -->
+  <circle cx="1422" cy="178" r="10" fill="#22d3ee" opacity="0.92"/>
+  <text x="1410" y="163" class="cl" text-anchor="end" fill="#22d3ee">T9 Tunnel</text>
+
+  <!-- T10/11 Nouvelle Chicane (tunnel exit) -->
+  <circle cx="1302" cy="361" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="1290" y="348" class="cl" text-anchor="end" fill="#e10600">T10/11 Nouvelle Chicane</text>
+
+  <!-- T12 Tabac -->
+  <circle cx="415" cy="379" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="430" y="367" class="cl" text-anchor="start" fill="#e10600">T12 Tabac</text>
+
+  <!-- T13 Louis Chiron -->
+  <circle cx="338" cy="417" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="353" y="405" class="cl" text-anchor="start" fill="#e10600">T13 Louis Chiron</text>
+
+  <!-- T14 Piscine (Swimming Pool) -->
+  <circle cx="294" cy="483" r="10" fill="#22c55e" opacity="0.92"/>
+  <text x="309" y="471" class="cl" text-anchor="start" fill="#22c55e">T14 Piscine 🏊</text>
+
+  <!-- T15–17 -->
+  <circle cx="260" cy="727" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="275" y="715" class="cl" text-anchor="start" fill="#e10600">T15–17</text>
+
+  <!-- T18 La Rascasse -->
+  <circle cx="226" cy="909" r="12" fill="#8b5cf6" opacity="0.92"/>
+  <text x="241" y="897" class="cl" text-anchor="start" fill="#8b5cf6">T18 La Rascasse</text>
+
+  <!-- T19 Anthony Noghès -->
+  <circle cx="152" cy="965" r="10" fill="#e10600" opacity="0.92"/>
+  <text x="137" y="993" class="cl" text-anchor="end" fill="#e10600">T19 Anthony Noghès</text>
+
+</svg>
+        <div class="track-legend">
+          <div class="legend-item"><span class="legend-color" style="background:var(--track-color)"></span> Strecke</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--color-accent)"></span> Pits</div>
+          <div class="legend-item"><span class="legend-color" style="background:#ef4444"></span> Langsamste Kurve</div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="section-title" style="margin-top:var(--space-6)">Strecken-Facts</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-card-val">3,337</span>
+          <span class="stat-card-unit">km</span>
+          <span class="stat-card-label">Streckenlänge</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-val">78</span>
+          <span class="stat-card-unit">Runden</span>
+          <span class="stat-card-label">Renndistanz</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-val">260,5</span>
+          <span class="stat-card-unit">km</span>
+          <span class="stat-card-label">Gesamtdistanz</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-val">19,4</span>
+          <span class="stat-card-unit">Sek</span>
+          <span class="stat-card-label">Pitstop-Zeitverlust</span>
+        </div>
+        <div class="stat-card stat-card-warn">
+          <span class="stat-card-val">43%</span>
+          <span class="stat-card-unit"></span>
+          <span class="stat-card-label">Safety Car Risiko</span>
+        </div>
+        <div class="stat-card stat-card-muted">
+          <span class="stat-card-val">~3</span>
+          <span class="stat-card-unit">Ø</span>
+          <span class="stat-card-label">Überholmanöver/Rennen</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-val">1:12.909</span>
+          <span class="stat-card-unit"></span>
+          <span class="stat-card-label">Rundenrekord (Hamilton '21)</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-val">1950</span>
+          <span class="stat-card-unit"></span>
+          <span class="stat-card-label">Erster GP Monaco</span>
+        </div>
+      </div>
+
+      <!-- Corner Notes -->
+      <div class="section-title" style="margin-top:var(--space-6)">Besondere Kurven</div>
+      <div class="corner-list">
+        <div class="corner-item">
+          <div class="corner-num">T1</div>
+          <div class="corner-detail">
+            <div class="corner-name">Ste. Dévote</div>
+            <div class="corner-desc">Erste Kurve — hohe Crash-Gefahr beim Start, SC-Magnet</div>
+          </div>
+          <div class="corner-badge badge-danger">⚠</div>
+        </div>
+        <div class="corner-item">
+          <div class="corner-num">T6</div>
+          <div class="corner-detail">
+            <div class="corner-name">Grand Hotel Hairpin (Loews)</div>
+            <div class="corner-desc">Langsamste F1-Kurve: ~30 km/h. Einzige Überholchance</div>
+          </div>
+          <div class="corner-badge badge-overtake">⟳</div>
+        </div>
+        <div class="corner-item">
+          <div class="corner-num">T10</div>
+          <div class="corner-detail">
+            <div class="corner-name">Tunnel → Chicane</div>
+            <div class="corner-desc">Schnellster Abschnitt: ~280 km/h im Tunnel. Brutaler Bremspunkt danach.</div>
+          </div>
+          <div class="corner-badge badge-speed">▲</div>
+        </div>
+        <div class="corner-item">
+          <div class="corner-num">T16</div>
+          <div class="corner-detail">
+            <div class="corner-name">Rascasse</div>
+            <div class="corner-desc">Letzter Sektor — berühmt für strategische "Blocks" in der Qualifikation</div>
+          </div>
+          <div class="corner-badge badge-info-sm">i</div>
+        </div>
+      </div>
+
+      <!-- Key Flags -->
+      <div class="section-title" style="margin-top:var(--space-6)">Rennbesonderheiten</div>
+      <div class="flag-grid">
+        <div class="flag-item">
+          <div class="flag-icon">🏁</div>
+          <div class="flag-text">
+            <strong>Grid = Ergebnis</strong>
+            <span>Überholen auf Strecke fast unmöglich – Qualifying dominiert</span>
+          </div>
+        </div>
+        <div class="flag-item">
+          <div class="flag-icon">🚗</div>
+          <div class="flag-text">
+            <strong>SC-Häufigkeit 43%</strong>
+            <span>Höchste in der gesamten Saison – Mauern überall</span>
+          </div>
+        </div>
+        <div class="flag-item">
+          <div class="flag-icon">🔧</div>
+          <div class="flag-text">
+            <strong>Pitstop-Timing kritisch</strong>
+            <span>19,4 Sek Zeitverlust – VSC/SC entscheiden über Strategie</span>
+          </div>
+        </div>
+        <div class="flag-item">
+          <div class="flag-icon">🌧️</div>
+          <div class="flag-text">
+            <strong>Regen = Chaos</strong>
+            <span>Nasse Strassen am Limit – historisch viele Ausfälle im Regen</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===== TAB: FIA ===== -->
+    <section id="tab-docs" class="tab-panel" role="tabpanel" aria-label="FIA Dokumente">
+      
+      <div class="section-title">FIA Dokumente & Stewards</div>
+
+      <!-- Live docs -->
+      <div class="fia-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+        FIA veröffentlicht Stewards-Entscheidungen live während des Wochenendes. Links führen direkt zur offiziellen FIA-Website.
+      </div>
+
+      <!-- Quick Links -->
+      <div class="fia-links">
+        <a href="https://www.fia.com/events/fia-formula-one-world-championship/season-2026/monaco-grand-prix/eventtiming" target="_blank" rel="noopener noreferrer" class="fia-link-card">
+          <div class="fia-link-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="fia-link-content">
+            <span class="fia-link-title">Stewards-Entscheidungen</span>
+            <span class="fia-link-sub">Live-Dokumente während des Rennwochenendes</span>
+          </div>
+          <svg class="fia-link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+
+        <a href="https://www.fia.com/events/fia-formula-one-world-championship/season-2026/monaco-grand-prix" target="_blank" rel="noopener noreferrer" class="fia-link-card">
+          <div class="fia-link-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+          </div>
+          <div class="fia-link-content">
+            <span class="fia-link-title">Event-Dokumente</span>
+            <span class="fia-link-sub">Technische Direktiven, Nenndokumente, Session-Notes</span>
+          </div>
+          <svg class="fia-link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+
+        <a href="https://www.formula1.com/en/racing/2026/monaco" target="_blank" rel="noopener noreferrer" class="fia-link-card">
+          <div class="fia-link-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="fia-link-content">
+            <span class="fia-link-title">F1.com Monaco GP</span>
+            <span class="fia-link-sub">Offizielle Session-Ergebnisse & Zeitplan</span>
+          </div>
+          <svg class="fia-link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+
+        <a href="https://press.pirelli.com" target="_blank" rel="noopener noreferrer" class="fia-link-card">
+          <div class="fia-link-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          </div>
+          <div class="fia-link-content">
+            <span class="fia-link-title">Pirelli Pressroom</span>
+            <span class="fia-link-sub">Reifennominierungen & technische Reports</span>
+          </div>
+          <svg class="fia-link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+
+      <!-- Regulations Section -->
+      <div class="section-title" style="margin-top:var(--space-6)">Wichtige 2026-Regeländerungen</div>
+      <div class="reg-cards">
+        <div class="reg-card">
+          <div class="reg-card-header">
+            <span class="reg-badge badge-changed">GEÄNDERT</span>
+            <span class="reg-card-title">Pflicht-Pitstop Monaco</span>
+          </div>
+          <p class="reg-card-text">Die 2025 eingeführte Pflicht-2-Stopp-Regel für Monaco wurde für 2026 wieder abgeschafft. Es gilt wieder die Standard-Regel: mind. 2 verschiedene Compound-Typen im Trockenen.</p>
+          <a href="https://www.motorsport.com/f1/news/monaco-scraps-mandatory-two-stop-rule-for-2026-/10801049/" target="_blank" rel="noopener noreferrer" class="reg-source">Quelle: motorsport.com →</a>
+        </div>
+
+        <div class="reg-card">
+          <div class="reg-card-header">
+            <span class="reg-badge badge-changed">GEÄNDERT</span>
+            <span class="reg-card-title">Stewards-Überprüfung</span>
+          </div>
+          <p class="reg-card-text">Neuer Art. 14.1.2 ISC 2026: Stewards dürfen eigene Entscheidungen selbstständig überprüfen, wenn neue relevante Informationen vorliegen, die zum Entscheidungszeitpunkt nicht verfügbar waren.</p>
+          <a href="https://www.fia.com/news" target="_blank" rel="noopener noreferrer" class="reg-source">Quelle: fia.com →</a>
+        </div>
+
+        <div class="reg-card">
+          <div class="reg-card-header">
+            <span class="reg-badge badge-new">NEU 2026</span>
+            <span class="reg-card-title">Pirelli C1–C5 Range</span>
+          </div>
+          <p class="reg-card-text">C6 nicht in die 2026-Range aufgenommen. Der C6-Prototyp bot zu wenig Performance-Delta zum C5. Fünf Compounds (C1–C5) für die gesamte Saison homologiert.</p>
+          <a href="https://coffeecornermotorsport.com/f1-2026-tyre-compound-range/" target="_blank" rel="noopener noreferrer" class="reg-source">Quelle: coffeecornermotorsport.com →</a>
+        </div>
+
+        <div class="reg-card">
+          <div class="reg-card-header">
+            <span class="reg-badge badge-info-reg">INFO</span>
+            <span class="reg-card-title">Penalty Points System</span>
+          </div>
+          <p class="reg-card-text">12 Strafpunkte auf der Superlizenz = Sperre für den nächsten GP. Punkte bleiben 12 Monate aktiv. Aktueller Stand der Fahrer-Strafpunkte bei fia.com einsehbar.</p>
+          <a href="https://www.fia.com" target="_blank" rel="noopener noreferrer" class="reg-source">Quelle: fia.com →</a>
+        </div>
+      </div>
+
+      <!-- Stewards Docs Placeholder -->
+      <div class="section-title" style="margin-top:var(--space-6)">Live-Stewards-Entscheidungen</div>
+      <div class="live-docs-placeholder">
+        <div class="live-docs-icon">📋</div>
+        <div class="live-docs-text">
+          <strong>Dokumente noch nicht verfügbar</strong>
+          <span>Stewards-Entscheidungen erscheinen ab Freitag 5. Juni live auf fia.com</span>
+        </div>
+        <a href="https://www.fia.com/events/fia-formula-one-world-championship/season-2026/monaco-grand-prix" target="_blank" rel="noopener noreferrer" class="live-docs-btn">FIA öffnen</a>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Bottom Safe Area Spacer for iOS -->
+  <div class="bottom-spacer"></div>
+
+  <script src="./app.js"></script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
